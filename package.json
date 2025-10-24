@@ -1,7 +1,7 @@
 {
   "name": "ralotpr-proxy-engine",
   "version": "1.0.0",
-  "description": "RalotPR high-speed proxy engine.",
+  "description": "RalotPR high-speed proxy engine for static and dynamic content.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
