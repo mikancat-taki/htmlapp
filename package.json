@@ -1,14 +1,14 @@
 {
-  "name": "ralotpr-proxy-engine",
-  "version": "1.0.0",
-  "description": "High-speed proxy engine for RalotPR.",
-  "main": "server.js",
+  // ...
+  "main": "main/server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js" 
+    // Renderはデフォルトで npm start を実行します
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.6.2",
-    "cheerio": "^1.0.0-rc.12"
+    "express": "^4.0.0",
+    "axios": "^1.0.0",
+    "cheerio": "^1.0.0-rc.12" 
+    // これらのプロキシに必要なライブラリが含まれているか確認
   }
 }
