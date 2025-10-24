@@ -1,14 +1,11 @@
 {
-  // ...
   "main": "main/server.js",
   "scripts": {
     "start": "node server.js" 
-    // Renderはデフォルトで npm start を実行します
   },
   "dependencies": {
     "express": "^4.0.0",
     "axios": "^1.0.0",
     "cheerio": "^1.0.0-rc.12" 
-    // これらのプロキシに必要なライブラリが含まれているか確認
   }
 }
