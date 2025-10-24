@@ -1,11 +1,18 @@
+// package.json
 {
-  "main": "main/server.js",
+  "name": "ralotpr-proxy-engine",
+  "version": "1.0.0",
+  "description": "RalotPR high-speed proxy engine.",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.js" 
+    "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.0.0",
-    "axios": "^1.0.0",
-    "cheerio": "^1.0.0-rc.12" 
+    "express": "^4.19.2",
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }
