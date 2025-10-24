@@ -1,0 +1,13 @@
+# render.yaml
+# Render Blueprint (インフラストラクチャの設計図)
+services:
+  # Web Service の定義
+  - type: web
+    name: ralotpr-proxy
+    env: node
+    plan: free # デモ用には'free'プランを選択
+    branch: main # デプロイに使用するブランチ
+    rootDir: ./ # リポジトリのルートがプロジェクトのルート
+    buildCommand: npm install # ビルド時に実行するコマンド
+    startCommand: node server.js # 起動時に実行するコマンド
+    # ポートの指定は不要。Node.jsサービスは自動的に $PORT を使用します
