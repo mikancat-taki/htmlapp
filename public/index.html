@@ -1,89 +1,134 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RalotPR Search Engine</title>
-    <style>
-        /* 既存のスタイルを移植 */
-        * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background: #363636; color: #fff; font-family: Arial, sans-serif; }
-        #loader { /* ... ローディングスタイルの移植 ... */ }
-        #main { position: fixed; inset: 0; display: none; padding-top: 60px; }
-        iframe { border: none; width: 100%; height: calc(100% - 60px); }
-        #search-form { background: #363636; position: fixed; top: 0; left: 0; right: 0; z-index: 900; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
-        #search-input { width: 60%; padding: 8px; border: 1px solid #555; border-radius: 4px; margin-right: 10px; background: #444; color: #fff; }
-        #search-button { padding: 8px 15px; border: none; border-radius: 4px; background: #00d9ff; color: #363636; cursor: pointer; font-weight: bold; }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-        @keyframes fadeIn { to { opacity: 1; } }
-        /* ロード画面のスタイルはserver.jsに依存しないため、適宜移植 */
-        #loader {
-            position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #363636; z-index: 1000;
-            animation: fadeOut 1s ease forwards; animation-delay: 3s;
-        }
-        #loader h1 { font-size: 48px; font-weight: bold; opacity: 0; animation: fadeIn 1.5s ease forwards; }
-        #loading-bar { width: 200px; height: 8px; background: #555; border-radius: 4px; margin-top: 20px; overflow: hidden; }
-        #loading-bar span { display: block; height: 100%; width: 0%; background: #00d9ff; animation: loading 3s ease forwards; }
-        @keyframes loading { to { width: 100%; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RalotPR Search Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #363636;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ロード画面 */
+    #loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #363636;
+      z-index: 1000;
+      animation: fadeOut 1s ease forwards;
+      animation-delay: 3s;
+    }
+
+    #loader h1 {
+      font-size: 48px;
+      font-weight: bold;
+      opacity: 0;
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    #loading-bar {
+      width: 200px;
+      height: 8px;
+      background: #555;
+      border-radius: 4px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    #loading-bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: #00d9ff;
+      animation: loading 3s ease forwards;
+    }
+
+    @keyframes loading {
+      to { width: 100%; }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* iframeエリア */
+    #main {
+      position: fixed;
+      inset: 0;
+      display: none;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
-    <div id="loader">
-        <h1>RalotPR</h1>
-        <div id="loading-bar"><span></span></div>
-    </div>
+  <!-- ローディング画面 -->
+  <div id="loader">
+    <h1>RalotPR</h1>
+    <div id="loading-bar"><span></span></div>
+  </div>
 
-    <div id="main">
-        <form id="search-form">
-            <input type="text" id="search-input" placeholder="検索ワードを入力..." required>
-            <button type="submit" id="search-button">RalotPR 検索</button>
-        </form>
-        <iframe id="proxy-iframe" src="about:blank" title="RalotPR Demo"></iframe>
-    </div>
+  <!-- メイン表示領域 -->
+  <div id="main">
+    <iframe src="https://ilovehotmoms.atamanco.eu/" title="RalotPR Demo"></iframe>
+  </div>
 
-    <audio id="bootSound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.wav" preload="auto"></audio>
-    <audio id="tapSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.wav" preload="auto"></audio>
+  <!-- 効果音 -->
+  <audio id="bootSound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.wav" preload="auto"></audio>
+  <audio id="tapSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.wav" preload="auto"></audio>
 
-    <script>
-        const bootSound = document.getElementById('bootSound');
-        const tapSound = document.getElementById('tapSound');
-        const searchForm = document.getElementById('search-form');
-        const searchInput = document.getElementById('search-input');
-        const proxyIframe = document.getElementById('proxy-iframe');
+  <script>
+    const bootSound = document.getElementById('bootSound');
+    const tapSound = document.getElementById('tapSound');
 
-        // 起動時音とローディング終了
-        window.addEventListener('load', () => {
-            bootSound.volume = 0.4;
-            bootSound.play().catch(()=>{});
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('main').style.display = 'block';
-            }, 4000); // 3秒ロード + 1秒フェード
-        });
+    // 起動時音
+    window.addEventListener('load', () => {
+      bootSound.volume = 0.4;
+      bootSound.play().catch(()=>{});
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+      }, 4000); // 3秒ロード + 1秒フェード
+    });
 
-        // クリック時音
-        document.addEventListener('click', () => { tapSound.currentTime = 0; tapSound.volume = 0.3; tapSound.play().catch(()=>{}); });
-        document.addEventListener('touchstart', () => { tapSound.currentTime = 0; tapSound.volume = 0.3; tapSound.play().catch(()=>{}); });
-        document.addEventListener('keydown', () => { tapSound.currentTime = 0; tapSound.volume = 0.3; tapSound.play().catch(()=>{}); });
-
-        // 検索フォーム送信処理
-        searchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const query = searchInput.value;
-            
-            if (query) {
-                // ターゲット: Google検索の結果
-                const targetUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                
-                // ★ポイント: プロキシサーバーのルートパス（/proxy）にターゲットURLを渡す
-                const proxiedUrl = `/proxy?url=${encodeURIComponent(targetUrl)}`;
-                
-                proxyIframe.src = proxiedUrl;
-                
-                tapSound.currentTime = 0;
-                tapSound.play().catch(()=>{});
-            }
-        });
-    </script>
+    // クリック時音
+    document.addEventListener('click', () => {
+      tapSound.currentTime = 0;
+      tapSound.volume = 0.3;
+      tapSound.play().catch(()=>{});
+    });
+    // タップ時音（モバイル対応）
+    document.addEventListener('touchstart', () => {
+      tapSound.currentTime = 0;
+      tapSound.volume = 0.3;
+      tapSound.play().catch(()=>{});
+    });
+    // キーボード操作時音
+    document.addEventListener('keydown', () => {
+      tapSound.currentTime = 0;
+      tapSound.volume = 0.3;
+      tapSound.play().catch(()=>{});
+    });
+    //iframe背景白
+    document.querySelector('iframe').style.backgroundColor = '#ffffff';
+    // iframe枠線消去
+    document.querySelector('iframe').style.border = 'none';
+  </script>
 </body>
 </html>
