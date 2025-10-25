@@ -1,134 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RalotPR Search Demo</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 0;
-      background: #363636;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    /* ロード画面 */
-    #loader {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      background: #363636;
-      z-index: 1000;
-      animation: fadeOut 1s ease forwards;
-      animation-delay: 3s;
-    }
-
-    #loader h1 {
-      font-size: 48px;
-      font-weight: bold;
-      opacity: 0;
-      animation: fadeIn 1.5s ease forwards;
-    }
-
-    #loading-bar {
-      width: 200px;
-      height: 8px;
-      background: #555;
-      border-radius: 4px;
-      margin-top: 20px;
-      overflow: hidden;
-    }
-
-    #loading-bar span {
-      display: block;
-      height: 100%;
-      width: 0%;
-      background: #00d9ff;
-      animation: loading 3s ease forwards;
-    }
-
-    @keyframes loading {
-      to { width: 100%; }
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-    @keyframes fadeOut {
-      to { opacity: 0; visibility: hidden; }
-    }
-
-    /* iframeエリア */
-    #main {
-      position: fixed;
-      inset: 0;
-      display: none;
-    }
-
-    iframe {
-      border: none;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロキシセレクター</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- ローディング画面 -->
-  <div id="loader">
-    <h1>RalotPR</h1>
-    <div id="loading-bar"><span></span></div>
-  </div>
+    <div class="container">
+        <h1>プロキシ経由でサイトを閲覧</h1>
+        
+        <div class="input-group">
+            <label for="url-input">https://skyward.iseasy.tw/:</label>
+            <input type="text" id="url-input" placeholder="https://example.com と入力">
+        </div>
 
-  <!-- メイン表示領域 -->
-  <div id="main">
-    <iframe src="https://ilovehotmoms.atamanco.eu/" title="RalotPR Demo"></iframe>
-  </div>
+        <h2>プロキシリスト</h2>
+        <ul id="proxy-list">
+            </ul>
 
-  <!-- 効果音 -->
-  <audio id="bootSound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-game-notification-212.wav" preload="auto"></audio>
-  <audio id="tapSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.wav" preload="auto"></audio>
+        <button id="browse-button">閲覧する</button>
 
-  <script>
-    const bootSound = document.getElementById('bootSound');
-    const tapSound = document.getElementById('tapSound');
+        <div id="result-frame-container">
+            <iframe id="result-frame"></iframe>
+        </div>
+    </div>
 
-    // 起動時音
-    window.addEventListener('load', () => {
-      bootSound.volume = 0.4;
-      bootSound.play().catch(()=>{});
-      setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('main').style.display = 'block';
-      }, 4000); // 3秒ロード + 1秒フェード
-    });
-
-    // クリック時音
-    document.addEventListener('click', () => {
-      tapSound.currentTime = 0;
-      tapSound.volume = 0.3;
-      tapSound.play().catch(()=>{});
-    });
-    // タップ時音（モバイル対応）
-    document.addEventListener('touchstart', () => {
-      tapSound.currentTime = 0;
-      tapSound.volume = 0.3;
-      tapSound.play().catch(()=>{});
-    });
-    // キーボード操作時音
-    document.addEventListener('keydown', () => {
-      tapSound.currentTime = 0;
-      tapSound.volume = 0.3;
-      tapSound.play().catch(()=>{});
-    });
-    //iframe背景白
-    document.querySelector('iframe').style.backgroundColor = '#ffffff';
-    // iframe枠線消去
-    document.querySelector('iframe').style.border = 'none';
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
